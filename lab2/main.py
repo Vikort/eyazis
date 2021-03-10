@@ -1,12 +1,9 @@
 import time
-from tkinter.filedialog import asksaveasfile, asksaveasfilename
-
 import nltk
-from tkinter import *
-from tkinter import messagebox
-from tkinter import filedialog as fd
 from nltk.draw import TreeWidget
 from nltk.draw.util import CanvasFrame
+from tkinter import messagebox, Label, RIGHT, Frame, Tk, LEFT, Text, WORD, END, Menu, Button
+from tkinter.filedialog import asksaveasfilename, askopenfilename
 from docx import Document
 
 nltk.download('punkt')
@@ -34,7 +31,6 @@ canvas.pack()
 
 
 def docx_parser(docx):
-    print(1)
     doc = Document(docx)
     text = ""
     for para in doc.paragraphs:
@@ -43,11 +39,12 @@ def docx_parser(docx):
 
 
 def open_file_and_input_text():
-    file_name = fd.askopenfilename(filetypes=(("Docx files", "*.docx"),))
+    file_name = askopenfilename(filetypes=(("Docx files", "*.docx"),))
     if file_name != '':
         text = docx_parser(file_name)
         enter_text.delete(1.0, END)
         enter_text.insert(1.0, text)
+
 
 def save_docx():
     file = asksaveasfilename(filetypes=(("Docx file", "*.docx"),), defaultextension=("Docx file", "*.docx"))
@@ -82,15 +79,13 @@ def draw_syntax_tree():
     start = time.time()
     text = enter_text.get(1.0, END)
     text = text.replace('\n', '')
+    text = text.replace(',', '')
+    text = text.replace('.', '')
     if text != '':
         doc = nltk.word_tokenize(text)
         doc = nltk.pos_tag(doc, tagset='universal')
-        text_without_punct = []
-        for item in doc:
-            if item[1] != ',' and item[1] != '.':
-                text_without_punct.append(item)
         cp = nltk.RegexpParser(grammar)
-        result = cp.parse(text_without_punct)
+        result = cp.parse(doc)
         widget = TreeWidget(canvas.canvas(), result)
         canvas.add_widget(widget, 50, 10)
 
@@ -99,10 +94,10 @@ def draw_syntax_tree():
     print(delta)
 
 
-mainmenu = Menu(root)
-mainmenu.add_command(label='Файл', command=open_file_and_input_text)
-mainmenu.add_command(label='Помощь', command=information)
-root.config(menu=mainmenu)
+main_menu = Menu(root)
+main_menu.add_command(label='Файл', command=open_file_and_input_text)
+main_menu.add_command(label='Помощь', command=information)
+root.config(menu=main_menu)
 
 button1 = Button(text="Создать", command=draw_syntax_tree)
 button1.pack(side=LEFT)
