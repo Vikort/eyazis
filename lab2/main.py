@@ -1,4 +1,5 @@
 import time
+from tkinter.filedialog import asksaveasfile, asksaveasfilename
 
 import nltk
 from tkinter import *
@@ -6,7 +7,7 @@ from tkinter import messagebox
 from tkinter import filedialog as fd
 from nltk.draw import TreeWidget
 from nltk.draw.util import CanvasFrame
-from pyquery import PyQuery
+from docx import Document
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
@@ -32,20 +33,28 @@ canvas = CanvasFrame(root, width=550, height=180)
 canvas.pack()
 
 
-def html_parser(html):
-    pq = PyQuery(html)
-    tag = pq('textarea')
-    return tag.text()
+def docx_parser(docx):
+    print(1)
+    doc = Document(docx)
+    text = ""
+    for para in doc.paragraphs:
+        text += para.text
+    return text
 
 
 def open_file_and_input_text():
-    file_name = fd.askopenfilename(filetypes=(("Html files", "*.html"),))
+    file_name = fd.askopenfilename(filetypes=(("Docx files", "*.docx"),))
     if file_name != '':
-        with open(file_name, 'r') as file:
-            text = file.read()
-            text = html_parser(text)
-            enter_text.delete(1.0, END)
-            enter_text.insert(1.0, text)
+        text = docx_parser(file_name)
+        enter_text.delete(1.0, END)
+        enter_text.insert(1.0, text)
+
+def save_docx():
+    file = asksaveasfilename(filetypes=(("Docx file", "*.docx"),), defaultextension=("Docx file", "*.docx"))
+    doc = Document()
+
+    doc.add_paragraph(enter_text.get(1.0, END))
+    doc.save(file)
 
 
 def information():
@@ -73,24 +82,32 @@ def draw_syntax_tree():
     start = time.time()
     text = enter_text.get(1.0, END)
     text = text.replace('\n', '')
-    text = text.replace(',', '')
-    text = text.replace('.', '')
     if text != '':
         doc = nltk.word_tokenize(text)
         doc = nltk.pos_tag(doc, tagset='universal')
+        text_without_punct = []
+        for item in doc:
+            if item[1] != ',' and item[1] != '.':
+                text_without_punct.append(item)
         cp = nltk.RegexpParser(grammar)
-        result = cp.parse(doc)
+        result = cp.parse(text_without_punct)
         widget = TreeWidget(canvas.canvas(), result)
-        canvas.add_widget(widget, 250, 10)
-    print(time.time() - start)
+        canvas.add_widget(widget, 50, 10)
+
+    finish = time.time()
+    delta = finish - start
+    print(delta)
 
 
-main_menu = Menu(root)
-main_menu.add_command(label='Файл', command=open_file_and_input_text)
-main_menu.add_command(label='Помощь', command=information)
-root.config(menu=main_menu)
+mainmenu = Menu(root)
+mainmenu.add_command(label='Файл', command=open_file_and_input_text)
+mainmenu.add_command(label='Помощь', command=information)
+root.config(menu=mainmenu)
 
 button1 = Button(text="Создать", command=draw_syntax_tree)
 button1.pack(side=LEFT)
+
+button2 = Button(text="Сохранить", command=save_docx)
+button2.pack(side=RIGHT)
 
 root.mainloop()
