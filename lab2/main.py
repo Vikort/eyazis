@@ -11,6 +11,7 @@ nltk.download('averaged_perceptron_tagger')
 nltk.download('universal_tagset')
 
 root = Tk()
+root.option_add('*Dialog.msg.font', 'Helvetica 10')
 root.title("Syntax parse tree")
 root.resizable(width=False, height=False)
 
@@ -54,10 +55,20 @@ def save_docx():
     doc.save(file)
 
 
+help_info = """Система синтаксического анализа естественного языка
+
+Система позволяет провести синтаксический анализ предложения анлглийского языка, загрузить предложение из файла, а также сохранить предложение в файл в формате docx.
+
+Результат синтаксический анализ предложения представлен в виде дерева, узлами которого являются фразы или лексемы.
+
+Для проведения синтаксического анализа необходимо ввести текст в верхнее поле и затем нажать кнопку "Создать".
+Для сохранение необходимо нажать кнопку "Сохранить", в появившемся окне выбрать нужный файл или задать имя новому файлу.
+Для открытия словаря необходимо нажать пункт меню "Файл", в появившемся окне выбрать нужный файл.
+"""
+
+
 def information():
-    messagebox.askquestion("Help", "1. Input text or open file.\n"
-                                   "2. Send button 'CREATE'.\n"
-                                   "3. Look at the painted syntax tree.", type='ok')
+    messagebox.askquestion("Help", help_info, type='ok')
 
 
 grammar = r"""
