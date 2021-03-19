@@ -19,7 +19,7 @@ root.resizable(width=False, height=False)
 label_frame = Frame(root)
 label_frame.pack()
 
-enter_label = Label(label_frame, text='Введите текст', width=10)
+enter_label = Label(label_frame, text='Введите текст', width=15)
 enter_label.pack(side=LEFT)
 
 empty_label = Label(label_frame, text='', width=65)
@@ -72,32 +72,26 @@ def information():
     messagebox.askquestion("Help", help_info, type='ok')
 
 
-grammar = r"""
-        P: {<PRT|ADP>}
-        V: {<VERB>}
-        N: {<NOUN|PRON>}
-        NP: {<N|NP|P>+<ADJ|NUM|DET>+}
-        NP: {<ADJ|NUM|DET>+<N|NP|P>+}
-        PP: {<P><NP>|<NP><P>}
-        VP: {<NP|N><V>}
-        VP: {<VP><NP|N||ADV>}
-        VP: {<NP|N|ADV><VP>}
-        VP: {<VP><PP|P>}
-        """
-
-
 def draw_semantic_tree():
     canvas.canvas().delete("all")
     start = time.time()
     text = enter_text.get(1.0, END)
     text = text.replace('\n', '')
-    text = text.replace(',', '')
-    text = text.replace('.', '')
     if text != '':
-        doc = nltk.word_tokenize(text)
+        sentences = nltk.sent_tokenize(text)
+        enter_text.insert(END, '\nPlease waiting. Semantic tree is drawing')
+        root.update()
         result = '(S '
-        for word in doc:
-            result += get_word_semantic(word)
+        for sent in sentences:
+            sent = sent.replace('.', '')
+            sent = sent.replace(',', '')
+            sent = sent.replace('?', '')
+            doc = nltk.word_tokenize(sent)
+            result_sent = '(SENT '
+            for word in doc:
+                result_sent += get_word_semantic(word)
+            result_sent += ')'
+            result += result_sent
         result += ')'
         result = nltk.tree.Tree.fromstring(result)
         widget = TreeWidget(canvas.canvas(), result)
@@ -105,26 +99,30 @@ def draw_semantic_tree():
 
     finish = time.time()
     delta = finish - start
+    enter_text.delete(enter_text.search('\nPlease waiting. Semantic tree is drawing', 1.0, END), END)
     print('draw tree: ', delta)
 
 
 def get_word_semantic(word: str) -> str:
     start = time.time()
+    if len(wn.synsets(word)) == 0:
+        return '(WS (W ' + word + '))'
     result = '(WS (W ' + word + ') (DEF ' + wn.synsets(word)[0].definition().replace(' ', '_') + ')'
-    synonyms = []
-    antonyms = []
-    hyponyms = []
-    hypernyms = []
+    synonyms, antonyms, hyponyms, hypernyms = [], [], [], []
     word = wn.synsets(word)
+    syn_app = synonyms.append
+    ant_app = antonyms.append
+    he_app = hyponyms.append
+    hy_app = hypernyms.append
     for synset in word:
         for lemma in synset.lemmas():
-            synonyms.append(lemma.name())
+            syn_app(lemma.name())
             if lemma.antonyms():
-                antonyms.append(lemma.antonyms()[0].name())
+                ant_app(lemma.antonyms()[0].name())
     for hyponym in word[0].hyponyms():
-        hyponyms.append(hyponym.name())
+        he_app(hyponym.name())
     for hypernym in word[0].hypernyms():
-        hypernyms.append(hypernym.name())
+        hy_app(hypernym.name())
     if len(synonyms):
         result += ' (SYN '
         for synonym in synonyms:
