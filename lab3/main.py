@@ -10,6 +10,7 @@ from docx import Document
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('universal_tagset')
+nltk.download('omw-1.4')
 
 root = Tk()
 root.option_add('*Dialog.msg.font', 'Helvetica 10')
