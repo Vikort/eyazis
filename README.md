@@ -8,6 +8,29 @@ This repository contains systems for:
 - [Markovec Viktor](https://github.com/Vikort)
 - [Nikita Filippov](https://github.com/TetVoid)
 
+## Install dependencies
+```bash
+pip install -r requirement.txt
+```
+
+## Run
+
+> To run formation of a natural language dictionary, enter next in the command line:
+```
+cd lab1
+python main_window.py
+```
+> To run syntactic analysis of natural language, enter next in the command line:
+```
+cd lab2
+python main.py
+```
+> To run semantic analysis of natural language, enter next in the command line:
+```
+cd lab3
+python main.py
+```
+
 ## Formation of a natural language dictionary
 [The system](https://github.com/Vikort/eyazis/tree/main/lab1) allows you to create a dictionary from the text of the Russian language, load the dictionary from a file, and save the dictionary to a file.
 
@@ -24,6 +47,10 @@ Description of functionality:
  - To save the dictionary, press the `Save` button, select the desired file in the window that appears, or set a name for the new file.
  - To open the dictionary, click the `File` menu item, in the window that appears, select the desired file.
 
+Example:
+
+![example of 1 lab](https://github.com/Vikort/eyazis/blob/main/lab1/example.png)
+
 ## Syntactic analysis of natural language
 [The system](https://github.com/Vikort/eyazis/tree/main/lab2) allows you to parse an English sentence, load a sentence from a file, and save the sentence to a file in docx format.
 The result of the parsing of the sentence is presented in the form of a tree, the nodes of which are phrases or tokens.
@@ -33,6 +60,10 @@ Description of functionality:
  - To save, you must press the `Save` button, in the window that appears, select the desired file or set a name for a new file.
  - To open the dictionary, click the `File` menu item, in the window that appears, select the desired file.
 
+Example:
+
+![example of 2 lab](https://github.com/Vikort/eyazis/blob/main/lab2/example.png)
+
 ## Semantic analysis of natural language
 [The system](https://github.com/Vikort/eyazis/tree/main/lab3) allows you to carry out a semantic analysis of an English sentence, load a sentence from a file, and also save a sentence to a file in docx format.
 The result of the semantic analysis of the sentence is presented in the form of a tree, the nodes of which are lexemes and their definition, synonyms, antonyms, hyponyms and hyperonyms.
@@ -41,3 +72,7 @@ Description of functionality:
  - To carry out semantic analysis, you must enter the text in the upper field and then click the `Create` button.
  - To save, you must press the `Save` button, in the window that appears, select the desired file or set a name for a new file.
  - To open the dictionary, click the `File` menu item, in the window that appears, select the desired file.
+
+Example:
+
+![example of 3 lab](https://github.com/Vikort/eyazis/blob/main/lab3/example.png)
