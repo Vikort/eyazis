@@ -5,7 +5,7 @@ docx==0.2.4
 joblib==1.1.0
 lxml==4.7.1
 nltk==3.6.6
-Pillow==8.4.0
+Pillow==9.0.0
 pymorphy2==0.9.1
 pymorphy2-dicts-ru==2.4.417127.4579844
 python-docx==0.8.11
